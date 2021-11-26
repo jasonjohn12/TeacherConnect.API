@@ -10,5 +10,7 @@ namespace TeacherConnect.Data.Interfaces
     public interface IEntryRepository
     {
         Task<int> AddEntryAsync(Entry entry);
+        Task<Entry> GetEntryByIdAsync(int entryid);
+        Task<int> DeleteEntryAsync(int entryid);
     }
 }

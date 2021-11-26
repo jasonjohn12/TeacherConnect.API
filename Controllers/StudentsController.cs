@@ -75,21 +75,31 @@ namespace TeacherConnect.Controllers
 
         }
 
-        //     // [HttpPatch]
-        //     // public async Task<ActionResult<StudentDto>> UpdateStudent(StudentDto studentDto)
-        //     // {
-        //     //     var userId = User.GetUserId();
-        //     //     var student = new Student
-        //     //     {
+        [HttpPut]
+        public async Task<ActionResult<StudentDto>> UpdateStudent(StudentDto studentDto)
+        {
+            var userId = User.GetUserId();
+            var student = await _studentRepository.GetStudentByIdAsync(studentDto.Id);
+            if (student == null) return NotFound();
+            if (userId != student.CreatedByUserId) return BadRequest("You are not authorized to edit this user");
+            var newStudent = new Student
+            {
+                Id = student.Id,
+                FirstName = studentDto.FirstName,
+                LastName = studentDto.LastName,
+                Grade = studentDto.Grade,
+                CreatedAtDate = student.CreatedAtDate,
+                LastUpdatedDate = DateTime.Now,
 
-        //     //         Grade = studentDto.Grade
+            };
+            var editedStudent = await _studentRepository.EditStudent(newStudent);
+            if (editedStudent > 0) return StatusCode(204, editedStudent);
+            return BadRequest("Unable to edit student");
+            // _studentsRepository.AddStudent(student);
+            // if (await _studentsRepository.SaveAllAsync()) return Ok(student);
+            // return BadRequest("Unabled to create student");
 
-        //     //     };
-        //     //     _studentsRepository.AddStudent(student);
-        //     //     if (await _studentsRepository.SaveAllAsync()) return Ok(student);
-        //     //     return BadRequest("Unabled to create student");
-
-        //     // }
+        }
         // }
     }
 }

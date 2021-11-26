@@ -20,6 +20,7 @@ namespace TeacherConnect.Helpers
             var userId = resultContext.HttpContext.User.GetUserId();
             var repo = resultContext.HttpContext.RequestServices.GetService<IUserRepository>();
             var user = await repo.GetUserByIdAsync(userId);
+            if (user == null) return;
             user.LastLoggedInDate = DateTime.Now;
             await repo.LogUser(user);
         }

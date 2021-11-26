@@ -25,6 +25,7 @@ namespace TeacherConnect.Controllers
         [HttpPost]
         public async Task<ActionResult<Entry>> AddEntry(EntryDto entryDto)
         {
+            System.Console.WriteLine("ADD ENTRY");
             var userId = User.GetUserId();
             var entryToAdd = new Entry
             {
@@ -32,11 +33,12 @@ namespace TeacherConnect.Controllers
                 Contacted = entryDto.Contacted,
                 //CreatedByUserId = userId,
                 StudentId = entryDto.StudentId,
-                CreatedAtDate = DateTime.UtcNow,
+                CreatedAtDate = DateTime.Now,
+                // ContactedDate = DateTime.Now,
                 CreatedByUserId = userId,
                 // LastEditByUserId = userId,
                 //   LastUpdatedDate = DateTime.UtcNow,
-                ContactedDate = entryDto.Contacted == true ? DateTime.UtcNow : null
+                ContactedDate = entryDto.Contacted == true ? DateTime.Now : null
             };
             var entryId = await _entryRepository.AddEntryAsync(entryToAdd);
             var createdEntry = new EntryDto
@@ -46,10 +48,28 @@ namespace TeacherConnect.Controllers
                 Contacted = entryDto.Contacted,
                 CreatedAtDate = entryToAdd.CreatedAtDate,
                 StudentId = entryDto.StudentId,
-                Grade = entryDto.Grade
+                // Grade = entryDto.Grade,
+                ContactedDate = entryDto.Contacted == true ? DateTime.Now : null
+
             };
             if (entryId > 0) return StatusCode(201, createdEntry);
             return BadRequest("Unable to create entry");
+        }
+        [HttpDelete()]
+        public async Task<ActionResult> DeleteEntry([FromQuery] int entryId)
+        {
+            System.Console.WriteLine($"EntryID is {entryId}");
+            System.Console.WriteLine("DELETE ENTRY");
+            var userId = User.GetUserId();
+            var entry = await _entryRepository.GetEntryByIdAsync(entryId);
+            if (entry == null) return NotFound();
+            if (userId != entry.CreatedByUserId)
+            {
+                return Unauthorized("You are not allowed to edit this entry");
+            }
+            var entryToDelete = await _entryRepository.DeleteEntryAsync(entryId);
+            return Ok();
+
         }
     }
 }

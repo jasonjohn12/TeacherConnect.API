@@ -40,11 +40,11 @@ namespace TeacherConnect.Data
             return result;
         }
 
-        public async Task<AppUser> GetUserByIdAsync(int userid)
+        public async Task<AppUser> GetUserByIdAsync(int id)
         {
             string sql = @"SELECT id FROM dbo.user WHERE id = @id";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@id", userid);
+            parameters.Add("@id", id);
             var result = await QueryFirstOrDefaultAsync<AppUser>(sql: sql, param: parameters);
             return result;
         }

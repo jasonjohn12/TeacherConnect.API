@@ -19,8 +19,8 @@ namespace TeacherConnect.Data
         }
         public async Task<int> AddEntryAsync(Entry entry)
         {
-            string command = @"INSERT INTO dbo.entry(studentid,note, createdatdate, lastupdatedate,createdbyuserid, contacted, contacteddate)
-              VALUES(@studentid, @note, @createdatdate,@lastupdatedate, @createdbyuserid, @contacted, @contacteddate) RETURNING id
+            string command = @"INSERT INTO dbo.entry(studentid,note, createdatdate,createdbyuserid, contacted, contacteddate)
+              VALUES(@studentid, @note, @createdatdate, @createdbyuserid, @contacted, @contacteddate) RETURNING id
             ";
             return await ExecuteScalarAsync<int>(sql: command, param: new
             {
@@ -35,6 +35,30 @@ namespace TeacherConnect.Data
                 contacted = entry.Contacted,
                 contacteddate = entry.ContactedDate
             });
+        }
+
+        public async Task<Entry> GetEntryByIdAsync(int id)
+        {
+            System.Console.WriteLine("GET ENTRY ASYNC");
+            string command = @"SELECT studentid,note, createdatdate,createdbyuserid, contacted, contacteddate from dbo.entry WHERE id=@id";
+            var entry = await QueryFirstOrDefaultAsync<Entry>(sql: command, param: new
+            {
+                id = id
+            });
+
+            return entry;
+        }
+
+        public async Task<int> DeleteEntryAsync(int id)
+        {
+            System.Console.WriteLine("DELETE ENTRY ASYNC");
+            string command = @"UPDATE dbo.entry SET status = 'I' WHERE id = @id";
+            var entry = await ExecuteAsync(sql: command, param: new
+            {
+                id = id
+            });
+
+            return entry;
         }
     }
 }

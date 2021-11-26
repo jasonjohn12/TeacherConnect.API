@@ -5,6 +5,8 @@ CREATE SCHEMA dbo;
 CREATE TABLE dbo.user(
 id SERIAL PRIMARY KEY,
 username VARCHAR ( 50 ) UNIQUE NOT NULL,
+email VARCHAR (50) UNIQUE NOT NULL
+userrole VARCHAR(10) 
 firstname VARCHAR (50) NOT NULL,
 lastname VARCHAR (50) NOT NULL,
 passwordhash bytea NOT NULL,
@@ -17,11 +19,11 @@ status char DEFAULT 'A'
 CREATE TABLE dbo.student(
 id SERIAL PRIMARY KEY,
 createdbyuserid integer REFERENCES dbo.user(id),
-firstname VARCHAR ( 50 ) UNIQUE NOT NULL,
+firstname VARCHAR ( 50 )  NOT NULL,
 lastname VARCHAR (50) NOT NULL,
 grade decimal NOT NULL,
-createdatdate DATE NOT NULL,
-lastupdateddate DATE NOT NULL,
+createdatdate timestamptz NOT NULL,
+lastupdateddate timestamptz NOT NULL,
 status char DEFAULT 'A'
 )
 
@@ -32,7 +34,7 @@ createdbyuserid integer NOT NULL,
 contacted boolean,
 contacteddate DATE,
 note VARCHAR (50) NOT NULL,
-createdatdate DATE NOT NULL,
-lastupdatedate DATE,
+createdatdate timestamptz NOT NULL,
+lastupdatedate timestamptz,
 status char DEFAULT 'A'
 )

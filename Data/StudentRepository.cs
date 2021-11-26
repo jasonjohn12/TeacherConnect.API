@@ -42,12 +42,26 @@ namespace TeacherConnectAPI.Data
             return result;
         }
 
+        public async Task<int> EditStudent(Student studentDto)
+        {
+            string command = @"UPDATE dbo.student SET firstname = @firstname, lastname = @lastname, grade = @grade,lastupdateddate = @lastupdateddate WHERE id = @id";
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@id", studentDto.Id);
+            parameters.Add("@firstname", studentDto.FirstName);
+            parameters.Add("@lastname", studentDto.LastName);
+            parameters.Add("@grade", studentDto.Grade);
+            parameters.Add("@lastupdateddate", studentDto.LastUpdatedDate);
+            var result = await ExecuteAsync(sql: command, param: parameters);
+            return result;
+        }
+
         public async Task<List<Student>> GetAllStudentsAsync(int userId)
         {
             string command = "SELECT  s.id, s.firstname, s.lastname, s.grade," +
-             "s.createdatdate, s.lastupdateddate, s.createdbyuserid, e.id, e.note, e.studentid," +
+             "s.createdatdate, s.lastupdateddate, s.createdbyuserid, e.id, e.note, e.studentid, e.status," +
              "e.createdatdate, e.createdbyuserid, e.lastupdatedate,e.contacted, e.contacteddate" +
-             " FROM dbo.student as s LEFT JOIN dbo.entry as e ON s.id = e.studentid  WHERE s.createdbyuserid = @userid" +
+             " FROM dbo.student as s LEFT JOIN dbo.entry as e ON s.id = e.studentid" +
+             "  WHERE s.createdbyuserid = @userid" +
              " AND s.status = 'A' ORDER BY s.id ASC, e.id ASC";
             var studentDict = new Dictionary<int, Student>();
             var students = await QueryAsync<Student, Entry, Student>(

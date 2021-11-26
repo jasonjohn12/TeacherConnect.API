@@ -10,6 +10,8 @@ namespace TeacherConnect.Data.Interfaces
         Task<List<Student>> GetAllStudentsAsync(int userId);
         Task<Student> GetStudentByIdAsync(int studentId);
         Task<int> AddStudent(Student studentDto);
+        Task<int> EditStudent(Student studentDto);
+
         // Task<bool> SaveAllAsync();
     }
 }

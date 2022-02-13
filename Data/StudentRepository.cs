@@ -26,10 +26,11 @@ namespace TeacherConnectAPI.Data
 
         public async Task<int> AddStudent(Student studentDto)
         {
-            string command = @"INSERT INTO dbo.student(firstName, lastName, grade,createdAtDate,lastupdateddate, createdbyuserid, status)
-              VALUES(@firstname, @lastname, @grade, @createdatdate, @lastupdateddate, @createdbyuserid,@status) RETURNING id";
+            string command = @"INSERT INTO dbo.student(userid, firstName, lastName, grade,createdAtDate,lastupdateddate, createdbyuserid, status)
+              VALUES(@userid, @firstname, @lastname, @grade, @createdatdate, @lastupdateddate, @createdbyuserid,@status) RETURNING id";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@id", dbType: System.Data.DbType.Int32, direction: System.Data.ParameterDirection.ReturnValue);
+            parameters.Add("@userid", studentDto.UserId);
             parameters.Add("@firstname", studentDto.FirstName);
             parameters.Add("@lastname", studentDto.LastName);
             parameters.Add("@grade", studentDto.Grade);
@@ -57,11 +58,11 @@ namespace TeacherConnectAPI.Data
 
         public async Task<List<Student>> GetAllStudentsAsync(int userId)
         {
-            string command = "SELECT  s.id, s.firstname, s.lastname, s.grade," +
+            string command = "SELECT  s.id, s.firstname, s.lastname, s.grade, s.userid," +
              "s.createdatdate, s.lastupdateddate, s.createdbyuserid, e.id, e.note, e.studentid, e.status," +
              "e.createdatdate, e.createdbyuserid, e.lastupdatedate,e.contacted, e.contacteddate" +
              " FROM dbo.student as s LEFT JOIN dbo.entry as e ON s.id = e.studentid" +
-             "  WHERE s.createdbyuserid = @userid" +
+             "  WHERE s.userid = @userid" +
              " AND s.status = 'A' ORDER BY s.id ASC, e.id ASC";
             var studentDict = new Dictionary<int, Student>();
             var students = await QueryAsync<Student, Entry, Student>(

@@ -32,7 +32,7 @@ namespace TeacherConnect.Data
             parameters.Add("@email", user.Email);
             parameters.Add("@passwordhash", user.PasswordHash);
             parameters.Add("@passwordsalt", user.PasswordSalt);
-            parameters.Add("@userrole", user.UserRole);
+            parameters.Add("@userrole", user.UserRole.ToString());
             parameters.Add("@createdatdate", user.CreatedAtDate);
             parameters.Add("@lastloggedindate", user.CreatedAtDate);
 

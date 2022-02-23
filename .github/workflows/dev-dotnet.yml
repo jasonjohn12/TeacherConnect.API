@@ -1,0 +1,36 @@
+name: Test and Deploy to Dev Environment
+
+on:
+  push:
+    branches: [ develop ]
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Publish App
+      run: dotnet publish -r linux-x64 -c Release -o site
+    - name: Generate deployment package
+      run: cd site; zip ../site.zip .; cd ..;
+    - name: Deploy to ElasticBeanstalk
+      uses: einaregilsson/beanstalk-deploy@v16
+      with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: teacherConnect-api
+          environment_name: Teacherconnectapi-dev
+          version_label: ${{ github.run_id}}
+          region: us-east-1
+          deployment_package: site.zip
+
+      

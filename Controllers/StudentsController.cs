@@ -26,7 +26,7 @@ namespace TeacherConnect.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetAllStudents()
         {
-            var students = await _studentRepository.GetAllStudentsAsync(User.GetUserId());
+            var students = await _studentRepository.GetAllStudentsAsync(4);
 
             return Ok(students);
         }

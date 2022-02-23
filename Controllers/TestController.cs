@@ -22,5 +22,11 @@ namespace TeacherConnect.Controllers
         {
             return Ok("HELLO WORLD");
         }
+
+        [HttpGet("goodbye")]
+        public ActionResult Goodbye()
+        {
+            return Ok("Goodbye WORLD");
+        }
     }
 }
